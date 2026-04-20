@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>mai.</title>
+  <link rel="icon" href="src/img/favicon.png">
+  <link rel="apple-touch-icon" href="src/img/app.jpeg">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles/mai.css">
+</head>
+
+<body>
+  <div id="onboarding"
+    style="display:none;position:fixed;inset:0;z-index:9998;background:#000;flex-direction:column;align-items:center;justify-content:center">
+    <canvas id="ob-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <div
+      style="position:relative;z-index:1;width:100%;max-width:380px;padding:24px;display:flex;flex-direction:column;height:100dvh;height:100vh">
+      <div id="ob-slides" style="flex:1;position:relative;overflow:hidden">
+        <div class="ob-slide active" data-slide="0">
+          <div
+            style="font-size:9px;font-weight:700;letter-spacing:5px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
+            private intelligence</div>
+          <div style="font-size:72px;font-weight:700;letter-spacing:-4px;color:#fff;line-height:1;margin-bottom:14px">
+            mai.</div>
+          <p
+            style="font-size:15px;color:rgba(255,255,255,.36);max-width:240px;line-height:1.6;margin-bottom:40px;font-weight:300">
+            Runs completely on your device. No servers, no tracking.</p><button class="ob-btn-primary"
+            onclick="app.obNext()">Begin <i class="fa-solid fa-arrow-right"
+              style="font-size:11px;margin-left:2px"></i></button>
+        </div>
+        <div class="ob-slide" data-slide="1">
+          <div
+            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
+            About you</div>
+          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">Your identity</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Stored locally.
+            Personalizes responses.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px"> <input class="m-input"
+              id="ob-name" placeholder="Name (optional)" autocomplete="off"> <input class="m-input" id="ob-email"
+              placeholder="Email (optional)" autocomplete="off"> <input class="m-input" id="ob-job"
+              placeholder="Occupation (optional)" autocomplete="off"> </div>
+          <div style="display:flex;gap:8px;margin-top:auto"><button class="m-btn ghost"
+              onclick="app.obNext()">Skip</button><button class="m-btn solid"
+              onclick="app.obSaveAccount()">Continue</button></div>
+        </div>
+        <div class="ob-slide" data-slide="2">
+          <div
+            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
+            Intelligence</div>
+          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">Pick a model</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Nothing loads
+            automatically. Select anytime from the sidebar.</p>
+          <div id="ob-model-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+            <div class="ob-model-pill active" data-ob-model="none">
+              <div style="font-size:13px;font-weight:600">No auto-load</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">Select a model manually when ready
+              </div>
+            </div>
+            <div class="ob-model-pill" data-ob-model="SmolLM2-360M-Instruct-q4f16_1-MLC">
+              <div style="font-size:13px;font-weight:600">SmolLM2 360M</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~200MB &middot; Fastest startup
+              </div>
+            </div>
+            <div class="ob-model-pill" data-ob-model="Llama-3.2-3B-Instruct-q4f16_1-MLC">
+              <div style="font-size:13px;font-weight:600">Llama 3.2 3B</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~2GB &middot; Recommended balance
+              </div>
+            </div>
+            <div class="ob-model-pill" data-ob-model="Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC">
+              <div style="font-size:13px;font-weight:600">Qwen 2.5 Coder 3B</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~2.2GB &middot; Best for code</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:auto"><button class="m-btn ghost"
+              onclick="app.obNext()">Skip</button><button class="m-btn solid" onclick="app.obNext()">Continue</button>
+          </div>
+        </div>
+        <div class="ob-slide" data-slide="3">
+          <div
+            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
+            Capabilities</div>
+          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">What mai. can do</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Built for focus and
+            real work.</p>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-lock" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>100%
+              on-device &mdash; no data leaves</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-code" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Coding agent
+              with live previews &amp; diffs</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-phone" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Call mode
+              with live TTS &amp; transcription</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-image" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Image
+              generation &mdash; keyless by default</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-users" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>mai. team
+              &mdash; dual-model arena</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
+                class="fa-solid fa-microphone" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Voice
+              notes with live waveform</div>
+          </div><button class="m-btn solid" style="margin-top:auto; max-height: 100px;" onclick="app.obFinish()">Get
+            started</button>
+        </div>
+      </div>
+      <div id="ob-dots" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 0">
+        <div class="ob-dot active"></div>
+        <div class="ob-dot"></div>
+        <div class="ob-dot"></div>
+        <div class="ob-dot"></div>
+      </div>
+    </div>
+  </div>
+  <div id="splash"><canvas id="sp-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
+      <div class="sp-wordmark">mai.</div>
+      <div class="sp-bar">
+        <div id="sp-fill" class="sp-fill"></div>
+      </div>
+      <div id="sp-txt" class="sp-txt">Initializing</div>
+    </div>
+  </div>
+  <div id="app">
+    <div id="hdr-dl-bar">
+      <div id="hdr-dl-fill"></div>
+    </div>
+    <div class="topbar">
+      <div class="tb-left"><button class="tb-btn" id="btn-drawer" aria-label="Menu"><i
+            class="fa-solid fa-bars"></i></button>
+        <div class="tb-model" id="tb-model">No model</div>
+        <div class="tb-progress" id="tb-progress">
+          <div class="pulse-dot"></div>
+        </div>
+      </div>
+      <div class="tb-center"></div>
+      <div class="tb-right"></div>
+    </div>
+    <div class="chat-area">
+      <div class="chat-scroll" id="chat-scroll">
+        <div id="empty" class="empty-state">
+          <div class="empty-greeting" id="greeting">How can I assist?</div>
+          <div class="empty-sub">Private AI. Your data stays on this device.</div>
+          <div class="qa-grid" id="qa-grid"></div>
+        </div>
+        <div id="msgs"></div>
+      </div>
+    </div>
+    <div class="botbar">
+      <div class="botbar-inner">
+        <div id="mode-bar" class="mode-bar" style="display:none"></div>
+        <div class="att-bar" id="att-bar"></div>
+        <div class="inp-pill" id="inp-pill"><button class="btn-plus" id="btn-plus" aria-label="More options"><i
+              class="fa-solid fa-ellipsis-vertical"></i></button><textarea class="bot-input" id="inp" rows="1"
+            maxlength="16000" placeholder="Message..." autocomplete="off" spellcheck="true"></textarea><button
+            class="send-btn" id="btn-send" aria-label="Send"> <canvas id="send-saturn" width="34" height="34"
+              style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:50%"></canvas><i
+              class="fa-solid fa-arrow-up" id="send-icon"></i></button></div>
+      </div>
+      <div class="bot-hint"><span>mai. v1.0</span><span id="footer-speed" style="display:none"></span>  <div class="stream-pill" id="stream-pill" style="float: right;">
+    <span class="sp-dot"></span>
+    <span class="sp-speed" id="sp-speed">0 t/s</span>
+    <span id="sp-tok">0 tok</span>
+  </div></div>
+    </div>
+  </div>
+  <div id="plus-menu" class="plus-menu" style="display:none"><button class="plus-item" id="pm-file"><i
+        class="fa-solid fa-paperclip"></i>Attach file <i class="fa-solid fa-check pi-check"></i></button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-img"><i class="fa-solid fa-image"></i>Image mode <i
+        class="fa-solid fa-check pi-check"></i></button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-imggen"><i
+        class="fa-solid fa-wand-magic-sparkles"></i>Generate image </button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-voice"><i class="fa-solid fa-microphone"></i>Voice note
+      <i class="fa-solid fa-check pi-check"></i></button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-call"><i class="fa-solid fa-phone"></i>Call mode
+    </button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-team"><i class="fa-solid fa-users"></i>mai. team <i
+        class="fa-solid fa-check pi-check"></i></button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-templates"><i
+        class="fa-solid fa-clipboard"></i>Templates </button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-import-conv"><i
+        class="fa-solid fa-file-import"></i>Import conversation </button>
+    <div class="plus-sep"></div><button class="plus-item" id="pm-bin"><i class="fa-solid fa-folder-open"></i>Import
+      model (.bin) </button>
+  </div>
+  <div id="plus-menu-ov" class="plus-menu-ov" style="display:none"></div>
+  <div id="call-page"
+    style="display:none;position:fixed;inset:0;z-index:600;background:#000;flex-direction:column;align-items:center;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)">
+    <canvas id="call-canvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:.32"></canvas>
+    <div
+      style="position:relative;z-index:1;width:100%;max-width:440px;display:flex;flex-direction:column;height:100%;align-items:center;padding:0 24px">
+      <div style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 0"><button
+          id="btn-call-end"
+          style="width:40px;height:40px;border-radius:12px;border:1px solid var(--border2);background:var(--bg2);color:var(--fg2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i
+            class="fa-solid fa-xmark"></i></button>
+        <div id="call-status" style="font-size:13px;font-weight:500;color:var(--fg2)">Ready</div>
+        <div id="call-model-lbl"
+          style="font-size:10px;color:var(--fg3);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        </div>
+      </div>
+      <div
+        style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;width:100%">
+        <div id="call-bars" style="display:flex;align-items:flex-end;gap:3px;height:40px">
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+          <div class="cb"></div>
+        </div>
+        <div id="call-transcript"
+          style="width:100%;min-height:56px;padding:12px 16px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);font-size:16px;color:var(--fg1);line-height:1.5;text-align:center;transition:all .3s">
+          Listening&hellip;</div>
+        <div id="call-subtitles"
+          style="min-height:36px;font-size:14px;color:var(--fg2);text-align:center;font-style:italic;line-height:1.6;width:100%;word-break:break-word">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:24px 0"><button id="btn-call-mute"
+          class="call-ctrl-btn" title="Mute"><i class="fa-solid fa-microphone"></i></button><button id="btn-call-talk"
+          class="call-ctrl-btn call-ctrl-main" title="Tap to toggle listening"><i
+            class="fa-solid fa-microphone"></i></button><button id="btn-call-spk" class="call-ctrl-btn"
+          title="Speaker"><i class="fa-solid fa-volume-high"></i></button></div>
+    </div>
+  </div>
+  <div class="drawer-overlay" id="drawer-ov"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-hdr">
+      <h2>mai.</h2><button class="d-close" id="drawer-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-search">
+      <div class="d-search-wrap"><i class="fa-solid fa-search"></i> <input id="d-search" class="d-search"
+          placeholder="Search chats&hellip;" autocomplete="off"> </div>
+    </div>
+    <div class="drawer-body">
+      <div class="d-section">
+        <div class="d-section-title">Engine</div>
+        <div class="d-model-card" id="d-model-card">
+          <div class="d-model-name" id="dm-name">No model</div>
+          <div class="d-model-meta" id="dm-meta">Tap Models to load one</div>
+          <div id="dm-dl-rows"></div>
+        </div>
+        <div class="d-grid"><button class="d-btn" id="d-btn-model"><i class="fa-solid fa-microchip"></i>
+            Models</button><button class="d-btn" id="d-btn-keys"><i class="fa-solid fa-key"></i> API Keys</button></div>
+      </div>
+      <div class="d-section" style="flex:1">
+        <div class="d-section-title" style="display:flex;justify-content:space-between;align-items:center">
+          <span>Chats</span><button
+            style="background:none;border:none;color:var(--fg3);cursor:pointer;font-size:10px;padding:0"
+            id="d-clear-all"><i class="fa-solid fa-trash"></i></button></div>
+        <div id="conv-list"></div>
+      </div>
+      <div class="d-section">
+        <div class="d-section-title">Storage</div>
+        <div class="d-store">
+          <div class="d-store-fill" id="store-fill" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--fg4)"><span
+            id="store-txt">&mdash;</span><button
+            style="background:none;border:none;color:var(--fg4);cursor:pointer;font-size:9px;padding:0"
+            id="d-clear-cache">Clear</button></div>
+      </div>
+      <div class="d-section">
+        <div class="d-section-title">Tools</div>
+        <div class="d-grid"><button class="d-btn" id="d-btn-export"><i class="fa-solid fa-download"></i>
+            Export</button><button class="d-btn" id="d-btn-templates"><i class="fa-solid fa-clipboard"></i>
+            Templates</button><button class="d-btn" id="d-btn-bookmarks"><i class="fa-solid fa-bookmark"></i>
+            Saved</button><button class="d-btn" id="d-btn-stats"><i class="fa-solid fa-chart-simple"></i> Stats</button>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <div class="d-new-row" style="margin-bottom:6px"><button class="d-btn primary" id="d-btn-new"><i
+            class="fa-solid fa-plus"></i> New Chat</button><button class="d-btn ghost d-btn-temp" id="d-btn-new-temp"
+          title="Temporary chat (not saved)"><i class="fa-solid fa-ghost"></i></button></div><button class="d-btn"
+        id="d-btn-settings"><i class="fa-solid fa-gear"></i> Settings</button>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-model">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Models</h3>
+        <div style="display:flex;align-items:center;gap:8px"><button id="m-toggle-locked"
+            style="font-size:10px;color:var(--fg3);background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:inherit">Show
+            locked</button><button class="modal-x" data-close="m-model"><i class="fa-solid fa-xmark"></i></button></div>
+      </div>
+      <div style="padding:0 14px 8px;border-bottom:1px solid var(--border)">
+        <div
+          style="display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
+          <i class="fa-solid fa-search" style="font-size:10px;color:var(--fg3)"></i> <input id="m-search"
+            placeholder="Search models&hellip;"
+            style="background:none;border:none;color:var(--fg);font-size:13px;flex:1;outline:none;font-family:inherit"
+            autocomplete="off"> </div>
+      </div>
+      <div class="modal-body">
+        <div id="m-model-cats"></div>
+        <div class="prog-box" id="m-prog" style="display:none">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--fg2)"><span
+              id="m-prog-label"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:10px"></i>
+              Loading&hellip;</span><span id="m-prog-pct" style="font-family:'JetBrains Mono',monospace">0%</span></div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="m-prog-fill" style="width:0"></div>
+          </div>
+          <div style="font-size:9px;color:var(--fg3);margin-top:4px;font-family:'JetBrains Mono',monospace"
+            id="m-prog-status"></div>
+        </div>
+        <div id="m-err"
+          style="display:none;font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:8px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.12);margin-top:6px">
+        </div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" data-close="m-model">Cancel</button><button
+          class="m-btn solid" id="m-load-btn" disabled>Load Model</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-keys">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>API Keys</h3><button class="modal-x" data-close="m-keys"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="m-label">OpenAI</span><input class="m-input" id="k-openai" type="password"
+            placeholder="sk-..."></div>
+        <div><span class="m-label">Google Gemini</span><input class="m-input" id="k-gemini" type="password"
+            placeholder="AIza..."></div>
+        <div><span class="m-label">Anthropic</span><input class="m-input" id="k-anthropic" type="password"
+            placeholder="sk-ant-..."></div>
+        <div><span class="m-label">Ollama URL</span><input class="m-input" id="k-ollama"
+            placeholder="http://localhost:11434"></div>
+        <div
+          style="font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
+          <i class="fa-solid fa-lock" style="margin-right:5px"></i>Stored on this device only. </div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" data-close="m-keys">Cancel</button><button class="m-btn solid"
+          id="k-save">Save</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-settings">
+    <div class="modal-sheet" style="max-height:92vh">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Settings</h3><button class="modal-x" data-close="m-settings"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="m-label">Appearance</span><select class="m-input" id="s-theme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="system">System</option>
+          </select></div>
+        <div><span class="m-label">About You</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px"> <input class="m-input"
+              id="s-name" placeholder="Name"> <input class="m-input" id="s-job" placeholder="Occupation"> </div>
+        </div>
+        <div><span class="m-label">Temperature <span id="s-temp-v"
+              style="float:right;font-family:'JetBrains Mono',monospace;font-weight:400">0.7</span></span> <input
+            type="range" id="s-temp" min="0" max="2" step="0.05" value="0.7"
+            style="width:100%;accent-color:var(--accent);margin-top:4px"> </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><span class="m-label">Max Tokens</span><input class="m-input" type="number" id="s-maxtok" value="2048"
+              style="font-family:'JetBrains Mono',monospace"></div>
+          <div><span class="m-label">Top P</span><input class="m-input" type="number" id="s-topp" value="0.95"
+              step="0.05" style="font-family:'JetBrains Mono',monospace"></div>
+        </div>
+        <div><span class="m-label">Auto-load Model</span><select class="m-input" id="s-autoload">
+            <option value="none">None (default &mdash; disabled)</option>
+            <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2 360M</option>
+            <option value="Llama-3.2-3B-Instruct-q4f16_1-MLC">Llama 3.2 3B</option>
+            <option value="Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC">Qwen 2.5 Coder 3B</option>
+          </select></div>
+        <div><span class="m-label">GPU Mode</span><select class="m-input" id="s-gpumode">
+            <option value="auto">Auto (WebGPU &rarr; CPU fallback on error)</option>
+            <option value="gpu">Force GPU (WebGPU only)</option>
+            <option value="cpu">Force CPU</option>
+          </select></div>
+        <div><span class="m-label">Features</span>
+          <div style="border-top:1px solid var(--border);margin-top:4px">
+            <div class="m-toggle"><span class="m-toggle-label">Stream responses</span><label class="sw"><input
+                  type="checkbox" id="s-stream" checked><span class="sw-track"></span></label></div>
+            <div class="m-toggle"><span class="m-toggle-label">Syntax highlight</span><label class="sw"><input
+                  type="checkbox" id="s-hl" checked><span class="sw-track"></span></label></div>
+            <div class="m-toggle"><span class="m-toggle-label">Timestamps</span><label class="sw"><input type="checkbox"
+                  id="s-ts" checked><span class="sw-track"></span></label></div>
+            <div class="m-toggle"><span class="m-toggle-label">Auto-title chats</span><label class="sw"><input
+                  type="checkbox" id="s-autotitle" checked><span class="sw-track"></span></label></div>
+            <div class="m-toggle"><span class="m-toggle-label">Confirm deletes</span><label class="sw"><input
+                  type="checkbox" id="s-confdel" checked><span class="sw-track"></span></label></div>
+            <div class="m-toggle"><span class="m-toggle-label">Notifications</span><label class="sw"><input
+                  type="checkbox" id="s-notif"><span class="sw-track"></span></label></div>
+            <div class="m-toggle">
+              <div><span class="m-toggle-label">Completion sound</span>
+                <div class="m-toggle-sub">Subtle tone when AI finishes (desktop)</div>
+              </div><label class="sw"><input type="checkbox" id="s-sound" checked><span class="sw-track"></span></label>
+            </div>
+          </div>
+        </div>
+        <div><span class="m-label">System Prompt</span><textarea class="m-input" id="s-sys" rows="3"
+            placeholder="Leave empty for default&hellip;" style="resize:vertical;margin-top:4px"></textarea></div>
+        <div><span class="m-label">Changelog</span>
+          <div id="changelog-list" style="margin-top:8px;padding-left:4px"></div>
+        </div>
+        <div
+          style="padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);text-align:center">
+          <a href="https://github.com/ayqshi" target="_blank" rel="noopener"
+            style="font-size:13px;font-weight:600;color:var(--fg1);text-decoration:none">ayqshi</a>
+          <div style="font-size:10px;color:var(--fg4);margin-top:2px">github.com/ayqshi</div>
+        </div>
+      </div>
+      <div class="modal-foot"><button class="m-btn solid" id="s-save">Save Settings</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-stats">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Stats</h3><button class="modal-x" data-close="m-stats"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          <div class="stat-tile">
+            <div class="stat-val" id="st-prompts">0</div>
+            <div class="stat-lbl">Prompts</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val" id="st-sessions">0</div>
+            <div class="stat-lbl">Sessions</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val" id="st-toks">0</div>
+            <div class="stat-lbl">Tokens</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val" id="st-err">0</div>
+            <div class="stat-lbl">Errors</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val" id="st-avg">&mdash;</div>
+            <div class="stat-lbl">Avg Time</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-val" id="st-time">0s</div>
+            <div class="stat-lbl">Session</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" style="color:var(--fg3)" id="st-reset">Reset</button><button
+          class="m-btn solid" data-close="m-stats">Done</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-export">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Export</h3><button class="modal-x" data-close="m-export"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+        <div><span class="m-label">Format</span><select class="m-input" id="ex-fmt">
+            <option value="md">Markdown</option>
+            <option value="json">JSON</option>
+            <option value="txt">Plain text</option>
+          </select></div>
+        <div id="ex-preview"
+          style="font-size:11px;color:var(--fg3);font-family:'JetBrains Mono',monospace;padding:10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);max-height:100px;overflow-y:auto">
+          No messages</div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" data-close="m-export">Cancel</button><button
+          class="m-btn solid" id="ex-do"><i class="fa-solid fa-download" style="margin-right:4px"></i>Export</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-tmpl">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Templates</h3><button class="modal-x" data-close="m-tmpl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:6px"> <input class="m-input" id="tm-name" placeholder="Template name"
+            style="flex:1"><button class="m-btn solid" id="tm-save" style="flex:0;padding:10px 14px">Save</button></div>
+        <textarea class="m-input" id="tm-content" rows="3" placeholder="Template content&hellip;"></textarea>
+        <div id="tm-list"></div>
+      </div>
+      <div class="modal-foot"><button class="m-btn solid" data-close="m-tmpl">Done</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-bm">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Saved</h3><button class="modal-x" data-close="m-bm"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div id="bm-list"></div>
+      </div>
+      <div class="modal-foot"><button class="m-btn solid" data-close="m-bm">Done</button></div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-imggen">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Image Generation</h3><button class="modal-x" data-close="m-imggen"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:10px">
+        <div
+          style="font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
+          <i class="fa-solid fa-lock" style="margin-right:4px"></i>Default: Pollinations &mdash; keyless, free, no API
+          required. </div>
+        <div><span class="m-label">Provider</span><select class="m-input" id="ig-model">
+            <option value="pollinations">Pollinations (free, keyless)</option>
+            <option value="craiyon">Craiyon (free, keyless)</option>
+            <option value="lexica">Lexica Aperture (free)</option>
+            <option value="hf-sd">Stable Diffusion via HuggingFace</option>
+            <option value="prodia">Prodia (free API)</option>
+            <option value="dalle3">DALL-E 3 (OpenAI key required)</option>
+          </select></div>
+        <div><span class="m-label">Prompt</span><textarea class="m-input" id="ig-prompt" rows="2"
+            placeholder="Describe the image&hellip;" style="margin-top:4px"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><span class="m-label">Size</span><select class="m-input" id="ig-size">
+              <option value="256">256px (fast)</option>
+              <option value="512" selected>512px</option>
+              <option value="1024">1024px</option>
+            </select></div>
+          <div><span class="m-label">Quality</span><select class="m-input" id="ig-steps">
+              <option value="10">Draft</option>
+              <option value="20" selected>Standard</option>
+              <option value="30">High</option>
+            </select></div>
+        </div>
+        <div id="ig-result"></div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" data-close="m-imggen">Cancel</button><button
+          class="m-btn solid" id="ig-gen"><i class="fa-solid fa-wand-magic-sparkles"
+            style="margin-right:4px"></i>Generate</button></div>
+    </div>
+  </div>
+  <div class="modal-ov voice-modal" id="m-voice">
+    <div class="modal-sheet" style="text-align:center">
+      <div class="modal-handle"></div>
+      <div class="modal-body" style="display:flex;flex-direction:column;align-items:center;padding:20px 20px 16px">
+        <div
+          style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--fg3);margin-bottom:14px;display:flex;align-items:center;gap:6px">
+          <span id="voice-rec-dot"
+            style="width:6px;height:6px;border-radius:50%;background:var(--fg3);animation:breathe 1.2s infinite"></span>
+          Recording </div> <canvas id="voice-wave-canvas" width="280" height="48"
+          style="width:100%;height:48px;border-radius:10px;background:var(--bg3);margin-bottom:12px"></canvas>
+        <p id="voice-txt"
+          style="font-size:14px;font-weight:300;color:var(--fg1);margin:8px 0;min-height:40px;line-height:1.5;max-width:280px">
+          Listening&hellip;</p>
+        <div id="voice-timer"
+          style="font-size:11px;color:var(--fg3);font-family:'JetBrains Mono',monospace;margin-bottom:14px">0:00</div>
+        <button class="m-btn ghost" id="voice-stop"
+          style="display:inline-flex;align-items:center;gap:6px;max-width:160px"><i class="fa-solid fa-stop"
+            style="font-size:10px"></i>Stop &amp; Send </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-ov" id="m-html">
+    <div class="modal-sheet" style="max-height:92vh">
+      <div class="modal-handle"></div>
+      <div class="modal-hdr">
+        <h3>Preview</h3>
+        <div style="display:flex;gap:6px;align-items:center"><button id="html-fullscreen-btn"
+            style="width:30px;height:30px;border-radius:50%;border:none;background:var(--bg3);color:var(--fg2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i
+              class="fa-solid fa-expand"></i></button><button class="modal-x" data-close="m-html"><i
+              class="fa-solid fa-xmark"></i></button></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 16px"><button
+          class="html-tab active" id="htab-preview">Preview</button><button class="html-tab"
+          id="htab-code">Code</button></div>
+      <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0"><iframe id="html-frame"
+          style="flex:1;border:none;background:#fff;width:100%;min-height:280px"
+          sandbox="allow-scripts allow-same-origin"></iframe>
+        <div id="html-src"
+          style="display:none;flex:1;overflow-y:auto;padding:12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--fg1);white-space:pre-wrap;background:var(--bg1)">
+        </div>
+      </div>
+      <div class="modal-foot"><button class="m-btn ghost" id="html-dl-btn"><i class="fa-solid fa-download"></i>
+          Download</button></div>
+    </div>
+  </div>
+  <div class="lightbox" id="lightbox"><button class="lightbox-close" id="lb-close"><i
+        class="fa-solid fa-xmark"></i></button> <img id="lb-img" src="" alt=""> </div>
+  <div class="ctx" id="ctx"></div>
+  <div class="toast-wrap" id="toasts"></div> <input type="file" id="file-inp"
+    accept=".txt,.md,.js,.ts,.py,.html,.css,.json,.csv,.xml,.yaml,.yml,.sh,.sql,.jpg,.jpeg,.png,.gif,.webp,.pdf"
+    multiple style="display:none"> <input type="file" id="bin-inp" accept=".bin,.gguf,.safetensors"
+    style="display:none"> <input type="file" id="conv-import-inp" accept=".json" style="display:none">
+  <script type="module" src="scripts/main.js"></script>
+</body>
+
+</html>
