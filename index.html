@@ -1,610 +1,606 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="mai. — your personal AI assistant">
   <title>mai.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles/mai.css">
   <link rel="icon" href="src/img/favicon.png">
   <link rel="apple-touch-icon" href="src/img/app.jpeg">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="styles/mai.css">
 </head>
-
 <body>
-  <div id="onboarding"
-    style="display:none;position:fixed;inset:0;z-index:9998;background:#000;flex-direction:column;align-items:center;justify-content:center">
-    <canvas id="ob-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-    <div
-      style="position:relative;z-index:1;width:100%;max-width:380px;padding:24px;display:flex;flex-direction:column;height:100dvh;height:100vh">
-      <div id="ob-slides" style="flex:1;position:relative;overflow:hidden">
-        <div class="ob-slide active" data-slide="0">
-          <div
-            style="font-size:9px;font-weight:700;letter-spacing:5px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
-            private intelligence</div>
-          <div style="font-size:72px;font-weight:700;letter-spacing:-4px;color:#fff;line-height:1;margin-bottom:14px">
-            mai.</div>
-          <p
-            style="font-size:15px;color:rgba(255,255,255,.36);max-width:240px;line-height:1.6;margin-bottom:40px;font-weight:300">
-            Runs completely on your device. No servers, no tracking.</p><button class="ob-btn-primary"
-            onclick="app.obNext()">Begin <i class="fa-solid fa-arrow-right"
-              style="font-size:11px;margin-left:2px"></i></button>
-        </div>
-        <div class="ob-slide" data-slide="1">
-          <div
-            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
-            About you</div>
-          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">Your identity</h2>
-          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Stored locally.
-            Personalizes responses.</p>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px"> <input class="m-input"
-              id="ob-name" placeholder="Name (optional)" autocomplete="off"> <input class="m-input" id="ob-email"
-              placeholder="Email (optional)" autocomplete="off"> <input class="m-input" id="ob-job"
-              placeholder="Occupation (optional)" autocomplete="off"> </div>
-          <div style="display:flex;gap:8px;margin-top:auto"><button class="m-btn ghost"
-              onclick="app.obNext()">Skip</button><button class="m-btn solid"
-              onclick="app.obSaveAccount()">Continue</button></div>
-        </div>
-        <div class="ob-slide" data-slide="2">
-          <div
-            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
-            Intelligence</div>
-          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">Pick a model</h2>
-          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Nothing loads
-            automatically. Select anytime from the sidebar.</p>
-          <div id="ob-model-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-            <div class="ob-model-pill active" data-ob-model="none">
-              <div style="font-size:13px;font-weight:600">No auto-load</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">Select a model manually when ready
-              </div>
-            </div>
-            <div class="ob-model-pill" data-ob-model="SmolLM2-360M-Instruct-q4f16_1-MLC">
-              <div style="font-size:13px;font-weight:600">SmolLM2 360M</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~200MB &middot; Fastest startup
-              </div>
-            </div>
-            <div class="ob-model-pill" data-ob-model="Llama-3.2-3B-Instruct-q4f16_1-MLC">
-              <div style="font-size:13px;font-weight:600">Llama 3.2 3B</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~2GB &middot; Recommended balance
-              </div>
-            </div>
-            <div class="ob-model-pill" data-ob-model="Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC">
-              <div style="font-size:13px;font-weight:600">Qwen 2.5 Coder 3B</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">~2.2GB &middot; Best for code</div>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:auto"><button class="m-btn ghost"
-              onclick="app.obNext()">Skip</button><button class="m-btn solid" onclick="app.obNext()">Continue</button>
-          </div>
-        </div>
-        <div class="ob-slide" data-slide="3">
-          <div
-            style="font-size:10px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:20px">
-            Capabilities</div>
-          <h2 style="font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px">What mai. can do</h2>
-          <p style="font-size:13px;color:rgba(255,255,255,.34);margin-bottom:20px;line-height:1.5">Built for focus and
-            real work.</p>
-          <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:24px">
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-lock" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>100%
-              on-device &mdash; no data leaves</div>
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-code" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Coding agent
-              with live previews &amp; diffs</div>
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-phone" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Call mode
-              with live TTS &amp; transcription</div>
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-image" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Image
-              generation &mdash; keyless by default</div>
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-users" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>mai. team
-              &mdash; dual-model arena</div>
-            <div style="display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.62)"><i
-                class="fa-solid fa-microphone" style="width:16px;font-size:11px;color:rgba(255,255,255,.28)"></i>Voice
-              notes with live waveform</div>
-          </div><button class="m-btn solid" style="margin-top:auto; max-height: 100px;" onclick="app.obFinish()">Get
-            started</button>
-        </div>
-      </div>
-      <div id="ob-dots" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 0">
-        <div class="ob-dot active"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-      </div>
-    </div>
-  </div>
-  <div id="splash"><canvas id="sp-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
-      <div class="sp-wordmark">mai.</div>
-      <div class="sp-bar">
-        <div id="sp-fill" class="sp-fill"></div>
-      </div>
-      <div id="sp-txt" class="sp-txt">Initializing</div>
-    </div>
-  </div>
-  <div id="app">
-    <div id="hdr-dl-bar">
-      <div id="hdr-dl-fill"></div>
-    </div>
-    <div class="topbar">
-      <div class="tb-left"><button class="tb-btn" id="btn-drawer" aria-label="Menu"><i
-            class="fa-solid fa-bars"></i></button>
-        <div class="tb-model" id="tb-model">No model</div>
-        <div class="tb-progress" id="tb-progress">
-          <div class="pulse-dot"></div>
-        </div>
-      </div>
-      <div class="tb-center"></div>
-      <div class="tb-right"></div>
-    </div>
-    <div class="chat-area">
-      <div class="chat-scroll" id="chat-scroll">
-        <div id="empty" class="empty-state">
-          <div class="empty-greeting" id="greeting">How can I assist?</div>
-          <div class="empty-sub">Private AI. Your data stays on this device.</div>
-          <div class="qa-grid" id="qa-grid"></div>
-        </div>
-        <div id="msgs"></div>
-      </div>
-    </div>
-    <div class="botbar">
-      <div class="botbar-inner">
-        <div id="mode-bar" class="mode-bar" style="display:none"></div>
-        <div class="att-bar" id="att-bar"></div>
-        <div class="inp-pill" id="inp-pill"><button class="btn-plus" id="btn-plus" aria-label="More options"><i
-              class="fa-solid fa-ellipsis-vertical"></i></button><textarea class="bot-input" id="inp" rows="1"
-            maxlength="16000" placeholder="Message..." autocomplete="off" spellcheck="true"></textarea><button
-            class="send-btn" id="btn-send" aria-label="Send"> <canvas id="send-saturn" width="34" height="34"
-              style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:50%"></canvas><i
-              class="fa-solid fa-arrow-up" id="send-icon"></i></button></div>
-      </div>
-      <div class="bot-hint"><span>mai. v1.0</span><span id="footer-speed" style="display:none"></span>  <div class="stream-pill" id="stream-pill" style="float: right;">
-    <span class="sp-dot"></span>
-    <span class="sp-speed" id="sp-speed">0 t/s</span>
-    <span id="sp-tok">0 tok</span>
-  </div></div>
-    </div>
-  </div>
-  <div id="plus-menu" class="plus-menu" style="display:none"><button class="plus-item" id="pm-file"><i
-        class="fa-solid fa-paperclip"></i>Attach file <i class="fa-solid fa-check pi-check"></i></button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-img"><i class="fa-solid fa-image"></i>Image mode <i
-        class="fa-solid fa-check pi-check"></i></button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-imggen"><i
-        class="fa-solid fa-wand-magic-sparkles"></i>Generate image </button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-voice"><i class="fa-solid fa-microphone"></i>Voice note
-      <i class="fa-solid fa-check pi-check"></i></button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-call"><i class="fa-solid fa-phone"></i>Call mode
-    </button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-team"><i class="fa-solid fa-users"></i>mai. team <i
-        class="fa-solid fa-check pi-check"></i></button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-templates"><i
-        class="fa-solid fa-clipboard"></i>Templates </button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-import-conv"><i
-        class="fa-solid fa-file-import"></i>Import conversation </button>
-    <div class="plus-sep"></div><button class="plus-item" id="pm-bin"><i class="fa-solid fa-folder-open"></i>Import
-      model (.bin) </button>
-  </div>
-  <div id="plus-menu-ov" class="plus-menu-ov" style="display:none"></div>
-  <div id="call-page"
-    style="display:none;position:fixed;inset:0;z-index:600;background:#000;flex-direction:column;align-items:center;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)">
-    <canvas id="call-canvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:.32"></canvas>
-    <div
-      style="position:relative;z-index:1;width:100%;max-width:440px;display:flex;flex-direction:column;height:100%;align-items:center;padding:0 24px">
-      <div style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 0"><button
-          id="btn-call-end"
-          style="width:40px;height:40px;border-radius:12px;border:1px solid var(--border2);background:var(--bg2);color:var(--fg2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i
-            class="fa-solid fa-xmark"></i></button>
-        <div id="call-status" style="font-size:13px;font-weight:500;color:var(--fg2)">Ready</div>
-        <div id="call-model-lbl"
-          style="font-size:10px;color:var(--fg3);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        </div>
-      </div>
-      <div
-        style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;width:100%">
-        <div id="call-bars" style="display:flex;align-items:flex-end;gap:3px;height:40px">
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-          <div class="cb"></div>
-        </div>
-        <div id="call-transcript"
-          style="width:100%;min-height:56px;padding:12px 16px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);font-size:16px;color:var(--fg1);line-height:1.5;text-align:center;transition:all .3s">
-          Listening&hellip;</div>
-        <div id="call-subtitles"
-          style="min-height:36px;font-size:14px;color:var(--fg2);text-align:center;font-style:italic;line-height:1.6;width:100%;word-break:break-word">
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:20px;padding:24px 0"><button id="btn-call-mute"
-          class="call-ctrl-btn" title="Mute"><i class="fa-solid fa-microphone"></i></button><button id="btn-call-talk"
-          class="call-ctrl-btn call-ctrl-main" title="Tap to toggle listening"><i
-            class="fa-solid fa-microphone"></i></button><button id="btn-call-spk" class="call-ctrl-btn"
-          title="Speaker"><i class="fa-solid fa-volume-high"></i></button></div>
-    </div>
-  </div>
-  <div class="drawer-overlay" id="drawer-ov"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawer-hdr">
-      <h2>mai.</h2><button class="d-close" id="drawer-close"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="drawer-search">
-      <div class="d-search-wrap"><i class="fa-solid fa-search"></i> <input id="d-search" class="d-search"
-          placeholder="Search chats&hellip;" autocomplete="off"> </div>
-    </div>
-    <div class="drawer-body">
-      <div class="d-section">
-        <div class="d-section-title">Engine</div>
-        <div class="d-model-card" id="d-model-card">
-          <div class="d-model-name" id="dm-name">No model</div>
-          <div class="d-model-meta" id="dm-meta">Tap Models to load one</div>
-          <div id="dm-dl-rows"></div>
-        </div>
-        <div class="d-grid"><button class="d-btn" id="d-btn-model"><i class="fa-solid fa-microchip"></i>
-            Models</button><button class="d-btn" id="d-btn-keys"><i class="fa-solid fa-key"></i> API Keys</button></div>
-      </div>
-      <div class="d-section" style="flex:1">
-        <div class="d-section-title" style="display:flex;justify-content:space-between;align-items:center">
-          <span>Chats</span><button
-            style="background:none;border:none;color:var(--fg3);cursor:pointer;font-size:10px;padding:0"
-            id="d-clear-all"><i class="fa-solid fa-trash"></i></button></div>
-        <div id="conv-list"></div>
-      </div>
-      <div class="d-section">
-        <div class="d-section-title">Storage</div>
-        <div class="d-store">
-          <div class="d-store-fill" id="store-fill" style="width:0%"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--fg4)"><span
-            id="store-txt">&mdash;</span><button
-            style="background:none;border:none;color:var(--fg4);cursor:pointer;font-size:9px;padding:0"
-            id="d-clear-cache">Clear</button></div>
-      </div>
-      <div class="d-section">
-        <div class="d-section-title">Tools</div>
-        <div class="d-grid"><button class="d-btn" id="d-btn-export"><i class="fa-solid fa-download"></i>
-            Export</button><button class="d-btn" id="d-btn-templates"><i class="fa-solid fa-clipboard"></i>
-            Templates</button><button class="d-btn" id="d-btn-bookmarks"><i class="fa-solid fa-bookmark"></i>
-            Saved</button><button class="d-btn" id="d-btn-stats"><i class="fa-solid fa-chart-simple"></i> Stats</button>
-        </div>
-      </div>
-    </div>
-    <div class="drawer-foot">
-      <div class="d-new-row" style="margin-bottom:6px"><button class="d-btn primary" id="d-btn-new"><i
-            class="fa-solid fa-plus"></i> New Chat</button><button class="d-btn ghost d-btn-temp" id="d-btn-new-temp"
-          title="Temporary chat (not saved)"><i class="fa-solid fa-ghost"></i></button></div><button class="d-btn"
-        id="d-btn-settings"><i class="fa-solid fa-gear"></i> Settings</button>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-model">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Models</h3>
-        <div style="display:flex;align-items:center;gap:8px"><button id="m-toggle-locked"
-            style="font-size:10px;color:var(--fg3);background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:inherit">Show
-            locked</button><button class="modal-x" data-close="m-model"><i class="fa-solid fa-xmark"></i></button></div>
-      </div>
-      <div style="padding:0 14px 8px;border-bottom:1px solid var(--border)">
-        <div
-          style="display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
-          <i class="fa-solid fa-search" style="font-size:10px;color:var(--fg3)"></i> <input id="m-search"
-            placeholder="Search models&hellip;"
-            style="background:none;border:none;color:var(--fg);font-size:13px;flex:1;outline:none;font-family:inherit"
-            autocomplete="off"> </div>
-      </div>
-      <div class="modal-body">
-        <div id="m-model-cats"></div>
-        <div class="prog-box" id="m-prog" style="display:none">
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--fg2)"><span
-              id="m-prog-label"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:10px"></i>
-              Loading&hellip;</span><span id="m-prog-pct" style="font-family:'JetBrains Mono',monospace">0%</span></div>
-          <div class="prog-bar">
-            <div class="prog-fill" id="m-prog-fill" style="width:0"></div>
-          </div>
-          <div style="font-size:9px;color:var(--fg3);margin-top:4px;font-family:'JetBrains Mono',monospace"
-            id="m-prog-status"></div>
-        </div>
-        <div id="m-err"
-          style="display:none;font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:8px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.12);margin-top:6px">
-        </div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" data-close="m-model">Cancel</button><button
-          class="m-btn solid" id="m-load-btn" disabled>Load Model</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-keys">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>API Keys</h3><button class="modal-x" data-close="m-keys"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
-        <div><span class="m-label">OpenAI</span><input class="m-input" id="k-openai" type="password"
-            placeholder="sk-..."></div>
-        <div><span class="m-label">Google Gemini</span><input class="m-input" id="k-gemini" type="password"
-            placeholder="AIza..."></div>
-        <div><span class="m-label">Anthropic</span><input class="m-input" id="k-anthropic" type="password"
-            placeholder="sk-ant-..."></div>
-        <div><span class="m-label">Ollama URL</span><input class="m-input" id="k-ollama"
-            placeholder="http://localhost:11434"></div>
-        <div
-          style="font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
-          <i class="fa-solid fa-lock" style="margin-right:5px"></i>Stored on this device only. </div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" data-close="m-keys">Cancel</button><button class="m-btn solid"
-          id="k-save">Save</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-settings">
-    <div class="modal-sheet" style="max-height:92vh">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Settings</h3><button class="modal-x" data-close="m-settings"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
-        <div><span class="m-label">Appearance</span><select class="m-input" id="s-theme">
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-            <option value="system">System</option>
-          </select></div>
-        <div><span class="m-label">About You</span>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px"> <input class="m-input"
-              id="s-name" placeholder="Name"> <input class="m-input" id="s-job" placeholder="Occupation"> </div>
-        </div>
-        <div><span class="m-label">Temperature <span id="s-temp-v"
-              style="float:right;font-family:'JetBrains Mono',monospace;font-weight:400">0.7</span></span> <input
-            type="range" id="s-temp" min="0" max="2" step="0.05" value="0.7"
-            style="width:100%;accent-color:var(--accent);margin-top:4px"> </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <div><span class="m-label">Max Tokens</span><input class="m-input" type="number" id="s-maxtok" value="2048"
-              style="font-family:'JetBrains Mono',monospace"></div>
-          <div><span class="m-label">Top P</span><input class="m-input" type="number" id="s-topp" value="0.95"
-              step="0.05" style="font-family:'JetBrains Mono',monospace"></div>
-        </div>
-        <div><span class="m-label">Auto-load Model</span><select class="m-input" id="s-autoload">
-            <option value="none">None (default &mdash; disabled)</option>
-            <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2 360M</option>
-            <option value="Llama-3.2-3B-Instruct-q4f16_1-MLC">Llama 3.2 3B</option>
-            <option value="Qwen2.5-Coder-3B-Instruct-q4f16_1-MLC">Qwen 2.5 Coder 3B</option>
-          </select></div>
-        <div><span class="m-label">GPU Mode</span><select class="m-input" id="s-gpumode">
-            <option value="auto">Auto (WebGPU &rarr; CPU fallback on error)</option>
-            <option value="gpu">Force GPU (WebGPU only)</option>
-            <option value="cpu">Force CPU</option>
-          </select></div>
-        <div><span class="m-label">Features</span>
-          <div style="border-top:1px solid var(--border);margin-top:4px">
-            <div class="m-toggle"><span class="m-toggle-label">Stream responses</span><label class="sw"><input
-                  type="checkbox" id="s-stream" checked><span class="sw-track"></span></label></div>
-            <div class="m-toggle"><span class="m-toggle-label">Syntax highlight</span><label class="sw"><input
-                  type="checkbox" id="s-hl" checked><span class="sw-track"></span></label></div>
-            <div class="m-toggle"><span class="m-toggle-label">Timestamps</span><label class="sw"><input type="checkbox"
-                  id="s-ts" checked><span class="sw-track"></span></label></div>
-            <div class="m-toggle"><span class="m-toggle-label">Auto-title chats</span><label class="sw"><input
-                  type="checkbox" id="s-autotitle" checked><span class="sw-track"></span></label></div>
-            <div class="m-toggle"><span class="m-toggle-label">Confirm deletes</span><label class="sw"><input
-                  type="checkbox" id="s-confdel" checked><span class="sw-track"></span></label></div>
-            <div class="m-toggle"><span class="m-toggle-label">Notifications</span><label class="sw"><input
-                  type="checkbox" id="s-notif"><span class="sw-track"></span></label></div>
-            <div class="m-toggle">
-              <div><span class="m-toggle-label">Completion sound</span>
-                <div class="m-toggle-sub">Subtle tone when AI finishes (desktop)</div>
-              </div><label class="sw"><input type="checkbox" id="s-sound" checked><span class="sw-track"></span></label>
-            </div>
-          </div>
-        </div>
-        <div><span class="m-label">System Prompt</span><textarea class="m-input" id="s-sys" rows="3"
-            placeholder="Leave empty for default&hellip;" style="resize:vertical;margin-top:4px"></textarea></div>
-        <div><span class="m-label">Changelog</span>
-          <div id="changelog-list" style="margin-top:8px;padding-left:4px"></div>
-        </div>
-        <div
-          style="padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);text-align:center">
-          <a href="https://github.com/ayqshi" target="_blank" rel="noopener"
-            style="font-size:13px;font-weight:600;color:var(--fg1);text-decoration:none">ayqshi</a>
-          <div style="font-size:10px;color:var(--fg4);margin-top:2px">github.com/ayqshi</div>
-        </div>
-      </div>
-      <div class="modal-foot"><button class="m-btn solid" id="s-save">Save Settings</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-stats">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Stats</h3><button class="modal-x" data-close="m-stats"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
-          <div class="stat-tile">
-            <div class="stat-val" id="st-prompts">0</div>
-            <div class="stat-lbl">Prompts</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-val" id="st-sessions">0</div>
-            <div class="stat-lbl">Sessions</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-val" id="st-toks">0</div>
-            <div class="stat-lbl">Tokens</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-val" id="st-err">0</div>
-            <div class="stat-lbl">Errors</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-val" id="st-avg">&mdash;</div>
-            <div class="stat-lbl">Avg Time</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-val" id="st-time">0s</div>
-            <div class="stat-lbl">Session</div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" style="color:var(--fg3)" id="st-reset">Reset</button><button
-          class="m-btn solid" data-close="m-stats">Done</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-export">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Export</h3><button class="modal-x" data-close="m-export"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
-        <div><span class="m-label">Format</span><select class="m-input" id="ex-fmt">
-            <option value="md">Markdown</option>
-            <option value="json">JSON</option>
-            <option value="txt">Plain text</option>
-          </select></div>
-        <div id="ex-preview"
-          style="font-size:11px;color:var(--fg3);font-family:'JetBrains Mono',monospace;padding:10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);max-height:100px;overflow-y:auto">
-          No messages</div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" data-close="m-export">Cancel</button><button
-          class="m-btn solid" id="ex-do"><i class="fa-solid fa-download" style="margin-right:4px"></i>Export</button>
-      </div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-tmpl">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Templates</h3><button class="modal-x" data-close="m-tmpl"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;gap:6px"> <input class="m-input" id="tm-name" placeholder="Template name"
-            style="flex:1"><button class="m-btn solid" id="tm-save" style="flex:0;padding:10px 14px">Save</button></div>
-        <textarea class="m-input" id="tm-content" rows="3" placeholder="Template content&hellip;"></textarea>
-        <div id="tm-list"></div>
-      </div>
-      <div class="modal-foot"><button class="m-btn solid" data-close="m-tmpl">Done</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-bm">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Saved</h3><button class="modal-x" data-close="m-bm"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body">
-        <div id="bm-list"></div>
-      </div>
-      <div class="modal-foot"><button class="m-btn solid" data-close="m-bm">Done</button></div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-imggen">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Image Generation</h3><button class="modal-x" data-close="m-imggen"><i
-            class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:10px">
-        <div
-          style="font-size:11px;color:var(--fg3);padding:8px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
-          <i class="fa-solid fa-lock" style="margin-right:4px"></i>Default: Pollinations &mdash; keyless, free, no API
-          required. </div>
-        <div><span class="m-label">Provider</span><select class="m-input" id="ig-model">
-            <option value="pollinations">Pollinations (free, keyless)</option>
-            <option value="craiyon">Craiyon (free, keyless)</option>
-            <option value="lexica">Lexica Aperture (free)</option>
-            <option value="hf-sd">Stable Diffusion via HuggingFace</option>
-            <option value="prodia">Prodia (free API)</option>
-            <option value="dalle3">DALL-E 3 (OpenAI key required)</option>
-          </select></div>
-        <div><span class="m-label">Prompt</span><textarea class="m-input" id="ig-prompt" rows="2"
-            placeholder="Describe the image&hellip;" style="margin-top:4px"></textarea></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <div><span class="m-label">Size</span><select class="m-input" id="ig-size">
-              <option value="256">256px (fast)</option>
-              <option value="512" selected>512px</option>
-              <option value="1024">1024px</option>
-            </select></div>
-          <div><span class="m-label">Quality</span><select class="m-input" id="ig-steps">
-              <option value="10">Draft</option>
-              <option value="20" selected>Standard</option>
-              <option value="30">High</option>
-            </select></div>
-        </div>
-        <div id="ig-result"></div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" data-close="m-imggen">Cancel</button><button
-          class="m-btn solid" id="ig-gen"><i class="fa-solid fa-wand-magic-sparkles"
-            style="margin-right:4px"></i>Generate</button></div>
-    </div>
-  </div>
-  <div class="modal-ov voice-modal" id="m-voice">
-    <div class="modal-sheet" style="text-align:center">
-      <div class="modal-handle"></div>
-      <div class="modal-body" style="display:flex;flex-direction:column;align-items:center;padding:20px 20px 16px">
-        <div
-          style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--fg3);margin-bottom:14px;display:flex;align-items:center;gap:6px">
-          <span id="voice-rec-dot"
-            style="width:6px;height:6px;border-radius:50%;background:var(--fg3);animation:breathe 1.2s infinite"></span>
-          Recording </div> <canvas id="voice-wave-canvas" width="280" height="48"
-          style="width:100%;height:48px;border-radius:10px;background:var(--bg3);margin-bottom:12px"></canvas>
-        <p id="voice-txt"
-          style="font-size:14px;font-weight:300;color:var(--fg1);margin:8px 0;min-height:40px;line-height:1.5;max-width:280px">
-          Listening&hellip;</p>
-        <div id="voice-timer"
-          style="font-size:11px;color:var(--fg3);font-family:'JetBrains Mono',monospace;margin-bottom:14px">0:00</div>
-        <button class="m-btn ghost" id="voice-stop"
-          style="display:inline-flex;align-items:center;gap:6px;max-width:160px"><i class="fa-solid fa-stop"
-            style="font-size:10px"></i>Stop &amp; Send </button>
-      </div>
-    </div>
-  </div>
-  <div class="modal-ov" id="m-html">
-    <div class="modal-sheet" style="max-height:92vh">
-      <div class="modal-handle"></div>
-      <div class="modal-hdr">
-        <h3>Preview</h3>
-        <div style="display:flex;gap:6px;align-items:center"><button id="html-fullscreen-btn"
-            style="width:30px;height:30px;border-radius:50%;border:none;background:var(--bg3);color:var(--fg2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i
-              class="fa-solid fa-expand"></i></button><button class="modal-x" data-close="m-html"><i
-              class="fa-solid fa-xmark"></i></button></div>
-      </div>
-      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 16px"><button
-          class="html-tab active" id="htab-preview">Preview</button><button class="html-tab"
-          id="htab-code">Code</button></div>
-      <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0"><iframe id="html-frame"
-          style="flex:1;border:none;background:#fff;width:100%;min-height:280px"
-          sandbox="allow-scripts allow-same-origin"></iframe>
-        <div id="html-src"
-          style="display:none;flex:1;overflow-y:auto;padding:12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--fg1);white-space:pre-wrap;background:var(--bg1)">
-        </div>
-      </div>
-      <div class="modal-foot"><button class="m-btn ghost" id="html-dl-btn"><i class="fa-solid fa-download"></i>
-          Download</button></div>
-    </div>
-  </div>
-  <div class="lightbox" id="lightbox"><button class="lightbox-close" id="lb-close"><i
-        class="fa-solid fa-xmark"></i></button> <img id="lb-img" src="" alt=""> </div>
-  <div class="ctx" id="ctx"></div>
-  <div class="toast-wrap" id="toasts"></div> <input type="file" id="file-inp"
-    accept=".txt,.md,.js,.ts,.py,.html,.css,.json,.csv,.xml,.yaml,.yml,.sh,.sql,.jpg,.jpeg,.png,.gif,.webp,.pdf"
-    multiple style="display:none"> <input type="file" id="bin-inp" accept=".bin,.gguf,.safetensors"
-    style="display:none"> <input type="file" id="conv-import-inp" accept=".json" style="display:none">
-  <script type="module" src="scripts/main.js"></script>
-</body>
 
+<!-- Compat Check Overlay -->
+<div id="compat-check">
+  <div class="compat-logo">mai.</div>
+  <div class="compat-progress"><div class="compat-progress-bar" style="width:0%"></div></div>
+  <div class="compat-text">Initializing…</div>
+</div>
+
+<div id="toast-container"></div>
+
+<div id="app">
+  <div id="sidebar-backdrop"></div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div class="mai-logo">mai.</div>
+      <div class="sidebar-actions">
+        <button class="icon-btn" id="new-chat-btn" title="New chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><line x1="12" y1="8" x2="12" y2="14"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-nav" id="sidebar-nav"></div>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-btns">
+      
+        <button class="sidebar-footer-btn" id="export-conv-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          Export conversation
+        </button>
+        <button class="sidebar-footer-btn" onclick="window.maiApp?.modals.open('favorites-modal');window.maiApp?._renderFavorites()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Favorites
+        </button>
+        <button class="sidebar-footer-btn" onclick="window.maiApp?.modals.open('memory-modal');window.maiApp?._loadMemoryUI()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Memory
+        </button>
+        <button class="sidebar-footer-btn" onclick="window.maiApp?.modals.open('settings-modal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </button>
+        <button class="sidebar-footer-btn" id="logout-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+    <header id="topbar">
+      <button class="icon-btn" id="menu-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <button class="model-pill" id="model-pill">
+        <div class="model-dot" id="model-dot"></div>
+        <span id="model-name">Select model</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;color:var(--text-3)"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="call-btn" data-feature="voice" title="Call mai.">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="temp-banner" class="temp-chat-banner" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Temporary chat — messages are not saved
+    </div>
+
+    <div id="chat-area" class="swipe-target">
+      <div class="chat-inner" id="chat-inner">
+        <div id="welcome">
+          <div class="welcome-logo">mai.</div>
+          <div class="welcome-sub">your personal AI, always ready</div>
+          <div class="welcome-suggestions">
+            <button class="suggestion-chip">Explain quantum computing</button>
+            <button class="suggestion-chip">Write a Python script</button>
+            <button class="suggestion-chip">Help me plan my week</button>
+            <button class="suggestion-chip">Summarize this text</button>
+            <button class="suggestion-chip">Debug my code</button>
+            <button class="suggestion-chip">Creative story prompt</button>
+            <button class="suggestion-chip">Translate to Spanish</button>
+            <button class="suggestion-chip">Analyze this image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT ZONE -->
+    <div id="input-zone">
+      <div class="input-zone-inner">
+        <div id="attachment-bar">
+          <div id="attach-mode-indicator" class="attachment-mode-indicator" style="display:none"></div>
+          <div class="attachment-items" id="attachment-items"></div>
+        </div>
+        <div class="input-pill">
+          <div class="input-btns-left">
+            <button class="input-icon-btn" id="plus-btn" title="Attach / modes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div id="input-mode-pill" class="input-mode-pill" style="display:none"></div>
+          <textarea id="main-textarea" placeholder="Message mai.…" rows="1" autocomplete="off" spellcheck="true"></textarea>
+          <div class="input-btns-right">
+            <button class="input-icon-btn" id="dropup-btn" title="Image settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </button>
+            <button class="input-icon-btn" id="voice-start-btn" data-feature="voice" title="Voice input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+            </button>
+            <button class="send-btn" id="send-btn" disabled title="Send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLUS MENU -->
+    <div id="plus-menu" class="hidden">
+      <button class="plus-menu-item" onclick="document.getElementById('file-input').click();document.getElementById('plus-menu').classList.add('hidden')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        Attach file
+      </button>
+      <button class="plus-menu-item" data-feature="camera" onclick="document.getElementById('camera-input').click();document.getElementById('plus-menu').classList.add('hidden')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Camera / photo
+      </button>
+      <div class="plus-menu-separator"></div>
+      <button class="plus-menu-toggle" data-mode="image-gen" onclick="window.maiApp?._toggleMode('image-gen')">
+        <div class="toggle-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Image gen
+        </div>
+        <div class="toggle-switch" id="toggle-image-gen"></div>
+      </button>
+      <button class="plus-menu-toggle" data-mode="camera" onclick="window.maiApp?._toggleMode('camera')">
+        <div class="toggle-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Camera mode
+        </div>
+        <div class="toggle-switch" id="toggle-camera"></div>
+      </button>
+      <button class="plus-menu-toggle" data-mode="team" onclick="window.maiApp?._toggleMode('team')">
+        <div class="toggle-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          mai. team (6-step)
+        </div>
+        <div class="toggle-switch" id="toggle-team"></div>
+      </button>
+    </div>
+
+    <!-- DROPUP MENU -->
+    <div id="dropup-menu" class="hidden">
+      <div class="dropup-section">
+        <div class="dropup-label">Quality</div>
+        <div class="dropup-options" id="quality-opts">
+          <button class="dropup-option selected" data-val="standard">Standard</button>
+          <button class="dropup-option" data-val="hd">HD</button>
+        </div>
+      </div>
+      <div class="dropup-section">
+        <div class="dropup-label">Size</div>
+        <div class="dropup-options" id="size-opts">
+          <button class="dropup-option selected" data-val="1024x1024">Square</button>
+          <button class="dropup-option" data-val="1792x1024">Wide</button>
+          <button class="dropup-option" data-val="1024x1792">Tall</button>
+          <button class="dropup-option" data-val="512x512">Small</button>
+        </div>
+      </div>
+      <div class="dropup-section">
+        <div class="dropup-label">Style</div>
+        <div class="dropup-options" id="style-opts">
+          <button class="dropup-option selected" data-val="vivid">Vivid</button>
+          <button class="dropup-option" data-val="natural">Natural</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Hidden inputs -->
+<input type="file" id="file-input" multiple accept="*/*" style="display:none">
+<input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="import-conv-input" accept=".json" style="display:none">
+<input type="file" id="model-file-input" accept=".gguf,.bin,.pt,.onnx" style="display:none">
+
+<!-- MODALS -->
+
+<!-- Model Selector -->
+<div class="overlay hidden" id="model-modal" onclick="if(event.target===this)window.maiApp?.modals.close('model-modal')">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <span class="modal-title">Choose model</span>
+      <button class="icon-btn" onclick="window.maiApp?.modals.close('model-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="model-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search models…" id="model-search" oninput="window.maiApp?._filterModels(this.value)">
+      </div>
+      <div id="model-list"></div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="document.getElementById('model-file-input').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Import model file
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="overlay hidden" id="settings-modal" onclick="if(event.target===this)window.maiApp?.modals.close('settings-modal')">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <span class="modal-title">Settings</span>
+      <button class="icon-btn" onclick="window.maiApp?.modals.close('settings-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding-top:0">
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="general">General</button>
+        <button class="settings-tab" data-tab="ai">AI</button>
+        <button class="settings-tab" data-tab="keys">Keys</button>
+        <button class="settings-tab" data-tab="voice">Voice</button>
+        <button class="settings-tab" data-tab="data">Data</button>
+      </div>
+      <div class="settings-panel active" id="settings-general">
+        <div class="settings-row">
+          <div><div class="settings-label">Quick reply badges</div><div class="settings-sub">Suggested responses after AI replies</div></div>
+          <div class="settings-toggle on" data-setting="quickReplies"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Mobile-only quick replies</div><div class="settings-sub">Only show on small screens</div></div>
+          <div class="settings-toggle" data-setting="quickRepliesMobile"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Line breaks in messages</div><div class="settings-sub">Preserve newlines in your messages</div></div>
+          <div class="settings-toggle" data-setting="lineBreaks"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Stream responses</div><div class="settings-sub">See words appear as AI generates them</div></div>
+          <div class="settings-toggle on" data-setting="streamResponses"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Humanize responses</div><div class="settings-sub">Auto-reword to sound more natural (offline)</div></div>
+          <div class="settings-toggle" data-setting="humanizeResponses"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Preload model on launch</div><div class="settings-sub">Auto-load local model when app opens</div></div>
+          <div class="settings-toggle" data-setting="preloadModel"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Temporary chat indicator</div><div class="settings-sub">Show banner for temporary chats</div></div>
+          <div class="settings-toggle on" data-setting="showTemporaryBadge"></div>
+        </div>
+      </div>
+      <div class="settings-panel" id="settings-ai">
+        <div class="settings-row">
+          <div style="flex:1">
+            <div class="settings-label">Custom system prompt</div>
+            <div class="settings-sub">Override AI personality and instructions</div>
+            <textarea id="system-prompt-input" rows="5" style="margin-top:10px;font-size:13px;resize:vertical" placeholder="You are a helpful assistant…"></textarea>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div style="flex:1">
+            <div class="settings-label">Temperature: <span id="temp-val">0.7</span></div>
+            <div class="settings-sub">Higher = more creative / Lower = more precise</div>
+            <input type="range" min="0" max="1" step="0.05" value="0.7" id="temp-slider" style="width:100%;margin-top:8px">
+          </div>
+        </div>
+      </div>
+      <div class="settings-panel" id="settings-keys">
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:14px">Stored locally on your device. Never sent to our servers.</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div><label style="font-size:11.5px;color:var(--text-3);display:block;margin-bottom:4px">OpenAI</label><input type="password" placeholder="sk-…" id="key-openai"></div>
+          <div><label style="font-size:11.5px;color:var(--text-3);display:block;margin-bottom:4px">Anthropic</label><input type="password" placeholder="sk-ant-…" id="key-anthropic"></div>
+          <div><label style="font-size:11.5px;color:var(--text-3);display:block;margin-bottom:4px">Groq</label><input type="password" placeholder="gsk_…" id="key-groq"></div>
+          <div><label style="font-size:11.5px;color:var(--text-3);display:block;margin-bottom:4px">Google AI</label><input type="password" placeholder="AIza…" id="key-google"></div>
+          <div><label style="font-size:11.5px;color:var(--text-3);display:block;margin-bottom:4px">OpenRouter</label><input type="password" placeholder="sk-or-…" id="key-openrouter"></div>
+        </div>
+        <button class="btn primary" style="margin-top:16px" id="save-keys-btn">Save keys</button>
+      </div>
+      <div class="settings-panel" id="settings-voice">
+        <div class="settings-row">
+          <div><div class="settings-label">Auto-read responses</div><div class="settings-sub">Speak AI responses aloud</div></div>
+          <div class="settings-toggle" data-setting="ttsEnabled"></div>
+        </div>
+        <div class="settings-row">
+          <div style="flex:1">
+            <div class="settings-label">Voice</div>
+            <select id="voice-select" style="margin-top:8px"></select>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div style="flex:1">
+            <div class="settings-label">Rate: <span id="rate-val">1.05</span></div>
+            <input type="range" min="0.5" max="2" step="0.05" value="1.05" id="rate-slider" style="width:100%;margin-top:8px">
+          </div>
+        </div>
+        <button class="btn" style="margin-top:8px" id="test-voice-btn">Test voice</button>
+      </div>
+      <div class="settings-panel" id="settings-data">
+        <div class="settings-row">
+          <div><div class="settings-label">Export all conversations</div><div class="settings-sub">Download as JSON backup</div></div>
+          <button class="btn" id="export-all-btn">Export</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Clear memory</div><div class="settings-sub">Remove all remembered facts</div></div>
+          <button class="btn" id="clear-memory-btn">Clear</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Wipe all data</div><div class="settings-sub">Permanently delete everything</div></div>
+          <button class="btn danger" id="wipe-data-btn">Wipe everything</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Favorites -->
+<div class="overlay hidden" id="favorites-modal" onclick="if(event.target===this)window.maiApp?.modals.close('favorites-modal')">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-title">Favorites</span>
+      <button class="icon-btn" onclick="window.maiApp?.modals.close('favorites-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body"><div class="favorites-list" id="favorites-list"></div></div>
+  </div>
+</div>
+
+<!-- Memory -->
+<div class="overlay hidden" id="memory-modal" onclick="if(event.target===this)window.maiApp?.modals.close('memory-modal')">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-title">Memory</span>
+      <button class="icon-btn" onclick="window.maiApp?.modals.close('memory-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:var(--text-3);margin-bottom:12px">mai. remembers these facts about you across conversations.</p>
+      <div id="memory-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Call -->
+<div class="overlay hidden" id="call-modal">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-header">
+      <span class="modal-title">Call — mai.</span>
+      <button class="icon-btn" onclick="window.maiApp?._endCall()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="voice-ui">
+        <div class="voice-orb" id="voice-orb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+        </div>
+        <canvas class="waveform-canvas" id="call-waveform" width="200" height="40"></canvas>
+        <div id="call-chat" style="width:100%;max-height:180px;overflow-y:auto;font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:6px;margin:8px 0"></div>
+        <button class="btn danger" onclick="window.maiApp?._endCall()">End call</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/engine.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/app.js"></script>
+
+<script>
+// ── Post-init extensions ────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Dropup option selectors
+  ['quality-opts','size-opts','style-opts'].forEach(groupId => {
+    document.getElementById(groupId)?.addEventListener('click', e => {
+      const btn = e.target.closest('.dropup-option');
+      if (!btn) return;
+      e.currentTarget.querySelectorAll('.dropup-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const val = btn.dataset.val;
+      const app = window.maiApp;
+      if (!app) return;
+      if (groupId === 'quality-opts') app.imgQuality = val;
+      if (groupId === 'size-opts') app.imgSize = val;
+      if (groupId === 'style-opts') app.imgStyle = val;
+    });
+  });
+
+  // Settings tabs
+  document.querySelectorAll('.settings-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('settings-' + tab.dataset.tab)?.classList.add('active');
+    });
+  });
+
+  // Settings toggles
+  document.querySelectorAll('.settings-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('on');
+      const key = toggle.dataset.setting;
+      if (key && window.maiApp) window.maiApp.setSetting(key, toggle.classList.contains('on'));
+    });
+  });
+
+  // Temperature slider
+  const tempSlider = document.getElementById('temp-slider');
+  const tempVal = document.getElementById('temp-val');
+  tempSlider?.addEventListener('input', () => {
+    if (tempVal) tempVal.textContent = tempSlider.value;
+    window.maiApp?.setSetting('temperature', parseFloat(tempSlider.value));
+  });
+
+  // Rate slider
+  const rateSlider = document.getElementById('rate-slider');
+  const rateVal = document.getElementById('rate-val');
+  rateSlider?.addEventListener('input', () => {
+    if (rateVal) rateVal.textContent = rateSlider.value;
+    window.maiApp?.setSetting('ttsRate', parseFloat(rateSlider.value));
+  });
+
+  // System prompt
+  document.getElementById('system-prompt-input')?.addEventListener('input', function() {
+    window.maiApp?.setSetting('customSystemPrompt', this.value);
+  });
+
+  // Save API keys button
+  document.getElementById('save-keys-btn')?.addEventListener('click', () => {
+    const app = window.maiApp;
+    if (!app) return;
+    if (!app.settings.apiKeys) app.settings.apiKeys = {};
+    ['openai','anthropic','groq','google','openrouter'].forEach(p => {
+      const el = document.getElementById('key-' + p);
+      if (el?.value) app.settings.apiKeys[p] = el.value;
+    });
+    app._saveSettings().then(() => app.toast.success('API keys saved'));
+  });
+
+  // Test voice
+  document.getElementById('test-voice-btn')?.addEventListener('click', () => {
+    window.maiApp?.tts.speak('Hi, I\'m mai. How can I help you today?');
+  });
+
+  // Export all
+  document.getElementById('export-all-btn')?.addEventListener('click', () => {
+    window.maiApp?._exportAllConversations?.();
+  });
+
+  // Clear memory
+  document.getElementById('clear-memory-btn')?.addEventListener('click', () => {
+    window.maiApp?.memory?.clear().then(() => window.maiApp?.toast?.success('Memory cleared'));
+  });
+
+  // Voice selector
+  const voiceSel = document.getElementById('voice-select');
+  const populateVoices = () => {
+    if (!voiceSel || !window.speechSynthesis) return;
+    voiceSel.innerHTML = '<option value="">Auto (best feminine)</option>';
+    speechSynthesis.getVoices().forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = v.name + ' (' + v.lang + ')';
+      voiceSel.appendChild(opt);
+    });
+  };
+  populateVoices();
+  if (window.speechSynthesis) speechSynthesis.onvoiceschanged = populateVoices;
+  voiceSel?.addEventListener('change', () => {
+    const app = window.maiApp;
+    if (!app) return;
+    const v = speechSynthesis.getVoices().find(v => v.name === voiceSel.value);
+    if (v) app.tts.selectedVoice = v;
+  });
+
+  // Wait for app then apply saved settings to UI
+  const applySettings = () => {
+    const app = window.maiApp;
+    if (!app) { setTimeout(applySettings, 100); return; }
+    const s = app.settings;
+
+    // Toggles
+    document.querySelectorAll('.settings-toggle').forEach(t => {
+      const key = t.dataset.setting;
+      if (key) t.classList.toggle('on', !!s[key]);
+    });
+
+    // System prompt
+    const sp = document.getElementById('system-prompt-input');
+    if (sp) sp.value = s.customSystemPrompt || '';
+
+    // Temp
+    if (tempSlider) tempSlider.value = s.temperature || 0.7;
+    if (tempVal) tempVal.textContent = s.temperature || 0.7;
+
+    // API keys
+    const keys = s.apiKeys || {};
+    ['openai','anthropic','groq','google','openrouter'].forEach(p => {
+      const el = document.getElementById('key-' + p);
+      if (el && keys[p]) el.value = keys[p];
+    });
+
+    // Additional app methods
+    app._toggleMode = (mode) => {
+      app._setMode(app.activeMode === mode ? null : mode);
+      app.teamMode = app.activeMode === 'team';
+    };
+
+    app._loadMemoryUI = async () => {
+      const list = document.getElementById('memory-list');
+      if (!list) return;
+      await app.memory.load();
+      const items = app.memory.cache;
+      list.innerHTML = items.length
+        ? items.map(m => `<div class="memory-item">
+            <span class="memory-tag">${m.tag}</span>
+            <span style="flex:1">${m.content}</span>
+            <button style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:12px" onclick="window.maiApp?.memory?.remove(${m.id}).then(()=>window.maiApp?._loadMemoryUI())">✕</button>
+          </div>`).join('')
+        : '<p class="text-muted text-sm">No memories yet. mai. learns about you as you chat.</p>';
+    };
+
+    app._exportAllConversations = async () => {
+      const convs = await app.db.getAll('conversations');
+      const msgs = await app.db.getAll('messages');
+      const blob = new Blob([JSON.stringify({conversations:convs,messages:msgs,exportedAt:Date.now()},null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement('a'),{href:url,download:`mai-backup-${Date.now()}.json`});
+      a.click(); URL.revokeObjectURL(url);
+      app.toast.success('Exported');
+    };
+
+    app._saveApiKey = async (p, v) => {
+      if (!app.settings.apiKeys) app.settings.apiKeys = {};
+      app.settings.apiKeys[p] = v;
+      await app._saveSettings();
+    };
+
+    app._filterModels = (q) => {
+      document.querySelectorAll('.model-item').forEach(el => {
+        el.style.display = el.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+      });
+    };
+
+    app._importModelFile = async (file) => {
+      if (!file) return;
+      const imported = app._getImportedModels ? app._getImportedModels() : [];
+      const model = {id:`imported_${file.name}`,name:file.name.replace(/\.(gguf|bin|pt|onnx)$/,''),type:'local',size:(file.size/1e9).toFixed(1)+'GB',desc:'Imported model'};
+      imported.push(model);
+      try { localStorage.setItem('mai_imported_models', JSON.stringify(imported)); } catch {}
+      app.toast.success('Model "'+model.name+'" imported');
+      app._renderModelList?.();
+    };
+
+    // Model file input
+    document.getElementById('model-file-input')?.addEventListener('change', e => {
+      app._importModelFile(e.target.files[0]);
+      e.target.value = '';
+    });
+  };
+  setTimeout(applySettings, 200);
+});
+
+// SW
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+</script>
+</body>
 </html>
