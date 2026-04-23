@@ -1,13 +1,10 @@
 # mai.
 ----
-mai. is an offline, privacy, and quality focused project that utilizes multiple webLLM models. <br>
-mai. uses the web browsers web cache to store the models, and allowing usage while disconnected from internet. <br>
-mai. is considerate of stress and tension build up during converations, keeps a calming and minimal, clear UI/UX. <br>
-mai. runs off of the GPU of the device, if it fails or proves insuffecient, it automatically falls back to basic web procedures. <br>
-mai. has full mobile view and usage support, along with PWA support for fullscreen web-clips and apps. <br>
+mai. is an offline, privacy, and quality focused project that utilizes multiple webLLM models cached for offline usage. <br> <br>
 
-
+--------------------
 ### features
+- GPU processing with WASM fallback
 - Multi-Modal Chatbot<br>
 - Unlimited and Free<br>
 - No-login Required<br>
