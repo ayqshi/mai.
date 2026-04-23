@@ -4,7 +4,8 @@ mai. is an offline, privacy, and quality focused project that utilizes multiple 
 
 --------------------
 ## FEATURES
-- GPU processing with WASM fallback
+- GPU processing with WASM fallback <br>
+- Coding Capabilities <br>
 - Multi-Modal Chatbot<br>
 - Unlimited and Free<br>
 - No-login Required<br>
@@ -12,5 +13,10 @@ mai. is an offline, privacy, and quality focused project that utilizes multiple 
 - Voice Notes with Transcription<br>
 - Arena Mode<br>
 - Supports Auth Key Models<br>
+- Conversation History <br>
+- Code Beautify/Minify <br>
 
+## SOURCES
+- HuggingFace <br>
+- Pollinations api <br>
 
