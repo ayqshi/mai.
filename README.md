@@ -3,7 +3,7 @@
 mai. is an offline, privacy, and quality focused project that utilizes multiple webLLM models cached for offline usage. <br> <br>
 
 --------------------
-### features
+## FEATURES
 - GPU processing with WASM fallback
 - Multi-Modal Chatbot<br>
 - Unlimited and Free<br>
